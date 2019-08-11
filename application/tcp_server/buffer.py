@@ -24,27 +24,16 @@ class Buffer:
         return (cur - self.size, cur, cur + self.size)
 
     async def push(self, tick):
-        tick = cal_feature(tick)
         if tick.ident_feature in self.out_area:
             # or not (self.window[0] < tick.datetime.timestamp() < self.window[1]):
             # 过滤过期数据
             return
         # 推送tick到源
-        """
-        self.cur_area = {
-                        tick.ident_feature : {
-                                                'all' : 5
-                                                tick.data_feature1 : [tick1, tick2, tick3],
-                                                tick.data_feature2 : [tick1, tick2],
-                                                }
-        }
-        """
-        self.cur_area.setdefault(tick.ident_feature, {'count': 0, "data": {tick.data_feature: []}})
+        self.cur_area.setdefault(tick.ident_feature, {'count': 0, "data": []})
         self.cur_area[tick.ident_feature]['count'] += 1
-        self.cur_area[tick.ident_feature]['data'][tick.data_feature].append(tick)
+        self.cur_area[tick.ident_feature].append(tick)
 
         # 如果满足的数量已经达到要求 --> 立即进行选举
-
 
         if self.cur_area[tick.ident_feature]['count'] >= ORIGIN_NUMBER:
             result = sorted(self.cur_area[tick.ident_feature]['data'].items(), key=lambda item: len(item[1])).pop()

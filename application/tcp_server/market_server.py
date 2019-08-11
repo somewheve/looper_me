@@ -60,11 +60,13 @@ class MarketServer(CoreServer):
         """ 处理数据请求 """
         pass
 
-
+    async def process_bar(self, **kwargs):
+        pass
 
     async def subscribe(self, **kwargs):
         # 发起订阅请求
         # todo 校验身份 ---> 通过校验的KEY来确认身份
+        
         address = kwargs.get("address")
         stream = kwargs.get("stream")
         self.subscribed_pool[address] = stream

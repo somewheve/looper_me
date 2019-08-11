@@ -1,4 +1,5 @@
 import os
+from configparser import ConfigParser
 
 from tornado.ioloop import IOLoop
 from application import make_app
@@ -7,13 +8,15 @@ import application.global_variable
 
 if __name__ == '__main__':
     try:
-        md_port = 12572
+        cfg = ConfigParser()
+        cfg.read('serve_config.ini')
+        md_port = cfg.getint('serve', 'md_port')
+        td_port = cfg.getint('serve', 'td_port')
+        http_port = cfg.getint('serve', 'http_port')
         md_server.listen(md_port)
         md_server.start()
-        td_port = 12472
         trade_server.listen(td_port)
         trade_server.start()
-        http_port = 8888
         app = make_app()
         app.listen(http_port)
         os.system(
