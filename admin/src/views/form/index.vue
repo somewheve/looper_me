@@ -42,7 +42,6 @@ export default {
         'ip': row.ip
       }
       this.axios.post(this.ipURL, this.$qs.stringify(sendData)).then(data => {
-        console.log(data)
         let returnData = data.data
         console.log(returnData.success)
         if (returnData.success == true) {

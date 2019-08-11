@@ -110,14 +110,18 @@ export default {
           if (returnData.success == true) {
             this.tableData = returnData.data;
             this.searchData = returnData.data;
-            let left = this.tableData.filter((item, index) => {
+            this.leftData = this.tableData.filter((item, index) => {
               return index % 2 == 0;
             });
-            let right = this.tableData.filter((item, index) => {
+            this.rightData = this.tableData.filter((item, index) => {
               return index % 2 != 0;
             });
-            this.leftData = left;
-            this.rightData = right;
+
+            let symbolArr=[]
+            for (let i in returnData.data){
+              symbolArr.push(returnData.data[i]['name'])
+            }
+            sessionStorage.setItem('symbolArr',JSON.stringify(symbolArr))
           }
         })
         .catch(err => {

@@ -49,15 +49,15 @@ export const constantRoutes = [{
       component: () => import('@/views/dashboard/index'),
       meta: {
         title: 'Ctpbee',
-        icon: 'dashboard'
+        icon: 'bee'
       }
     }]
   },
   {
     path: '/data_manager',
     component: Layout,
-    redirect: '/example/table',
-    name: '数据管理',
+    redirect: '/',
+    name: 'data_manager',
     meta: {
       title: '数据管理',
       icon: 'example'
@@ -85,6 +85,11 @@ export const constantRoutes = [{
   {
     path: '/download',
     component: Layout,
+    redirect:'/data_manager/table',
+    meta: {
+      title: '数据下载',
+      icon: 'table'
+    },
     children: [{
       path: 'index',
       name: 'download',
@@ -117,7 +122,7 @@ export const constantRoutes = [{
       component: () => import('@/views/blackHouse/index'),
       meta: {
         title: '小黑屋',
-        icon: 'form'
+        icon: 'house'
       }
     }]
   },
@@ -130,7 +135,7 @@ export const constantRoutes = [{
       component: () => import('@/views/server/index'),
       meta: {
         title: '源服务器管理',
-        icon: 'form'
+        icon: 'server'
       }
     }]
   },
@@ -138,25 +143,27 @@ export const constantRoutes = [{
   {
     path: '/config',
     component: Layout,
-    redirect: '/nested/menu1',
+    redirect: '/',
     name: 'Nested',
     meta: {
       title: '服务器配置项',
-      icon: 'nested'
+      icon: 'configure'
     },
     children: [{
         path: 'base',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
         name: 'base',
         meta: {
-          title: '基础配置'
+          title: '基础配置',
+          icon:'configuration'
         }
       },
       {
         path: 'high_level',
         component: () => import('@/views/nested/menu2/index'),
         meta: {
-          title: '高级配置'
+          title: '高级配置',
+          icon:'configuration_1'
         }
       }
     ]
