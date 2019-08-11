@@ -1,13 +1,16 @@
+import asyncio
+import json
 from copy import deepcopy
 from time import time
 
-
 import pandas as pd
+import tornado.options
 
 from application.global_variable import ORIGIN_NUMBER
 from application.tcp_server.helper import cal_feature
 from application.tcp_server.mongo import MotorClient
-import tornado.options
+from application.tcp_server.protocol import DataProtocol
+
 
 class Buffer:
 
@@ -45,14 +48,16 @@ class Buffer:
             res = dict(zip(list(c.columns), list(c.values)[0]))
             res['datetime'] = str(tick.datetime)
             res['local_symbol'] = tick.local_symbol
-            print(res)
-            # print(d)
+
             # 根据订阅列表进行推送  &&  写入数据库
             ident_feature = deepcopy(res['ident_feature'])
             del res['ident_feature']
-            await self.motor_client.insert_one(res)
             for stream in self.server.subscribed_pool.values():
-                await stream.write(res)
+                data = DataProtocol.create_any(type="tick_data", data=json.dumps(res),
+                                               key=tornado.options.options.KEY)
+                await stream.write(data)
+
+            await self.motor_client.insert_one(res)
 
             # 将特征值记录到过期区中去
             self.out_area.add(ident_feature)

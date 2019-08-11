@@ -1,5 +1,6 @@
-from data_pointer.constant import AUTH_KEY
 import tornado.options
+
+from data_pointer.constant import AUTH_KEY
 
 
 class DataProtocol:
@@ -33,8 +34,12 @@ class DataProtocol:
         if not self.parse_result:
             # 解析失败
             return
-        if self.key == tornado.options.options.variableKEY:
+        if self.key == tornado.options.options.KEY:
             self.auth = True
+
+    @classmethod
+    def create_any(cls, type, data, key):
+        return f"{type}--{data}--{key}".encode("utf-8") + AUTH_KEY
 
     def __repr__(self):
         return f"DataProtocol type: {self.type}, content: {self.content}"

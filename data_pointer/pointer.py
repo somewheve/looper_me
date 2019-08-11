@@ -51,8 +51,6 @@ class DataPointer(CtpbeeApi):
         pass
 
     def on_tick(self, tick: TickData) -> None:
-        if tick.symbol == "ag1910":
-            print(tick.datetime)
         p = dumps(tick)
         fancy = EVENT_TICK + "--" + p + "--" + self.key
         p = bytes(fancy, encoding="utf-8") + AUTH_KEY

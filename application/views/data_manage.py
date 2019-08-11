@@ -96,7 +96,11 @@ class DownloadFileHandler(BaseHandle):
         """ 处理 """
         for item in results:
             if isinstance(item, dict):
-                item['datetime'] = datetime.strftime(item['datetime'], '%Y-%m-%d %H:%M:%S')
+                try:
+                    print(item['datetime'])
+                    item['datetime'] = datetime.strftime(item['datetime'], '%Y-%m-%d %H:%M:%S')
+                except KeyError:
+                    item['datetime'] = datetime.strftime(item['datetime'], '%Y-%m-%d %H:%M:%S.%f')
             item = str(item).replace('{', '').replace('}', '')
             data_csv += '{},\r\n'.format(item, )
         """写入"""

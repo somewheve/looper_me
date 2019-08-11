@@ -1,3 +1,5 @@
+import asyncio
+
 from ctpbee import loads
 
 from application.model import blacklist_db
@@ -7,8 +9,6 @@ from application.tcp_server.fancy import CoreServer
 
 
 class MarketServer(CoreServer):
-    """ 交易服务器  --> maybe 没啥用 """
-
     def __init__(self):
         super().__init__()
         # 全局stream对象
@@ -54,7 +54,7 @@ class MarketServer(CoreServer):
 
         if tick.local_symbol not in self.buffers:
             self.buffers[tick.local_symbol] = Buffer(tick.local_symbol, self)
-        await self.buffers[tick.local_symbol].push(tick)
+        await asyncio.wait_for(self.buffers[tick.local_symbol].push(tick), timeout=1)
 
     async def process_data_req(self, **kwargs):
         """ 处理数据请求 """
@@ -66,10 +66,11 @@ class MarketServer(CoreServer):
     async def subscribe(self, **kwargs):
         # 发起订阅请求
         # todo 校验身份 ---> 通过校验的KEY来确认身份
-        
         address = kwargs.get("address")
         stream = kwargs.get("stream")
-        self.subscribed_pool[address] = stream
+        if address in self.subscribed_pool:
+            self.subscribed_pool[address].close()
+        self.subscribed_pool[address[0]] = stream
 
     async def handler(self, type, content, stream, address):
         if type not in REQ_TYPE:
