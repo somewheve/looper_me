@@ -58,7 +58,7 @@ class Buffer:
             if res.symbol == "zn1910":
                 print(res)
             await self.motor_client.insert_one(res._to_dict())
-            for addr, stream in self.server.subscribed_pool.items():
+            for stream in self.server.subscribed_pool.values():
                 await stream.write(res)
 
             # 将特征值记录到过期区中去
