@@ -18,13 +18,16 @@ ctpbee 使用的数据服务器
 
 
 ## 开始之前 
-serve_config.ini 文件记录了服务器启动的端口, 当发现端口被占用的时候请更换 
+
+-  serve_config.ini 文件记录了服务器启动的端口, 当发现端口被占用的时候请更换 
 值得注意的是http端口需要和admin/src/main.js 下面的
 `const URL = 'http://127.0.0.1:8888'  `端口保持一致
 
-
-
-#### 启动服务端
+- 安装依赖
+  ```
+  pip install -r requriement
+  ```
+## 启动服务端
 `python serve.py `
 
 #### 启动前端 
