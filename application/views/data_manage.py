@@ -8,7 +8,6 @@ from application.views import BaseHandle
 from application.common import true_return, false_return
 from application.tcp_server.mongo import MotorClient
 
-#http://10.40.25.15:8888/file?code=zn1910.SHFE+j2005.DCE
 
 async def filter(collection: list, start: datetime = None, end: datetime = None, download: bool = False):
     data = []
@@ -31,7 +30,7 @@ async def filter(collection: list, start: datetime = None, end: datetime = None,
             data.extend([document async for document in cursor if document.pop('_id', None) or 1])
             continue
         else:
-            cursor = motor_client.collection.find().sort('datetime')
+            cursor = motor_client.collection.find()
             data.extend([document async for document in cursor if document.pop('_id', None) or 1])
     return data
 
@@ -61,6 +60,7 @@ class DataHandler(BaseHandle):
         #     if end:
         #         end = datetime.strptime(end, '%Y-%m-%d')
         # except ValueError:
+        #     self.write(false_return(msg='日期参数格式错误'))
         #     return
         # """过滤查询"""
         # res = await filter(code, start, end)
@@ -68,9 +68,6 @@ class DataHandler(BaseHandle):
 
 
 class DownloadFileHandler(BaseHandle):
-    # def get(self):
-    #     pass
-
     async def post(self):
         code = self.get_argument('code')
         start = self.get_argument('start', None)
@@ -80,7 +77,7 @@ class DownloadFileHandler(BaseHandle):
         """ 检查参数,转换参数,设定文件名"""
         if not code:
             return
-        code = code.split(' ')
+        code = code.split('+')
         try:
             if start:
                 filename += start + "_"
@@ -89,6 +86,7 @@ class DownloadFileHandler(BaseHandle):
                 filename += end + "_"
                 end = datetime.strptime(end, '%Y-%m-%d')
         except ValueError:
+            self.write(false_return(msg='日期参数格式错误'))
             return
         filename = '{}{}.csv'.format(filename, code[0] if len(code) == 1 else 'Many')
 
