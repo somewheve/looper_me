@@ -2,9 +2,9 @@ import os
 from configparser import ConfigParser
 
 from tornado.ioloop import IOLoop
-
 from application import make_app
 from application.tcp_server import md_server, trade_server
+import application.global_variable
 
 if __name__ == '__main__':
     try:
