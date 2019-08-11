@@ -8,4 +8,4 @@ BLACKLIST_SQL = f'create table {BLACKLIST_TABLENAME}(id integer primary key auto
 
 CONFIG_DBNAME='config'
 CONFIG_TABLENAME = 'config'
-CONFIG_SQL = f'create table {CONFIG_TABLENAME}(id integer primary key autoincrement, config_name varchar(20),config_value varchar (128))'
+CONFIG_SQL = f'create table {CONFIG_TABLENAME}(id integer primary key autoincrement, config_name varchar(20) UNIQUE,config_value varchar (128))'

@@ -1,6 +1,6 @@
 from application.model.base import SqliteClient
 
-from application.config import BLACKLIST_TABLENAME, BLACKLIST_SQL, BLACKLIST_DBNAME
+from application.db_config import BLACKLIST_TABLENAME, BLACKLIST_SQL, BLACKLIST_DBNAME
 
 
 class Blacklist(SqliteClient):

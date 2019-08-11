@@ -1,6 +1,7 @@
 from application.model.base import SqliteClient
 
-from application.config import CONFIG_SQL, CONFIG_TABLENAME, CONFIG_DBNAME
+from application.db_config import CONFIG_SQL, CONFIG_TABLENAME, CONFIG_DBNAME
+from application.global_variable import KEY, AUTH_REQUIRED, ORIGIN_NUMBER
 
 
 class Config(SqliteClient):
@@ -14,3 +15,9 @@ class Config(SqliteClient):
 
 
 config_db = Config(db_name=CONFIG_DBNAME, tablename=CONFIG_TABLENAME, sql=CONFIG_SQL)
+try:
+    config_db.push(config_name='KEY', config_value=KEY)
+    config_db.push(config_name='AUTH_REQUIRED', config_value=AUTH_REQUIRED)
+    config_db.push(config_name='ORIGIN_NUMBER', config_value=ORIGIN_NUMBER)
+except:
+    pass
