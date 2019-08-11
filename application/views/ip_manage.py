@@ -19,7 +19,6 @@ class IpHandler(BaseHandle):
         todo = self.get_argument('todo', None)
         if not ip or not todo: return
         print(todo, ip)
-
         if todo == 'kill':
             md_server.global_connection.pop(ip).close()
             self.write(true_return(msg='封禁成功'))
