@@ -1,10 +1,9 @@
 from copy import deepcopy
 from time import time
 
-from application.global_variable import ORIGIN_NUMBER
 from application.tcp_server.helper import cal_feature
 from application.tcp_server.mongo import MotorClient
-
+import tornado.options
 
 class Buffer:
 
@@ -35,7 +34,7 @@ class Buffer:
 
         # 如果满足的数量已经达到要求 --> 立即进行选举
 
-        if self.cur_area[tick.ident_feature]['count'] >= ORIGIN_NUMBER:
+        if self.cur_area[tick.ident_feature]['count'] >= tornado.options.options.ORIGIN_NUMBER:
             result = sorted(self.cur_area[tick.ident_feature]['data'].items(), key=lambda item: len(item[1])).pop()
             res = result[1][0]
             # 根据订阅列表进行推送  &&  写入数据库

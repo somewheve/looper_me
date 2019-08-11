@@ -1,23 +1,25 @@
 from application.model.base import SqliteClient
 
 from application.db_config import CONFIG_SQL, CONFIG_TABLENAME, CONFIG_DBNAME
-from application.global_variable import variable
+from application.global_variable import KEY, ORIGIN_NUMBER, AUTH_REQUIRED
 import tornado.options
+
 
 class Config(SqliteClient):
     def load_config(self):
-        res = self.query('config_name', 'config_value')
+        res = self.query('key', 'origin_number', 'auth_required')
         data = {}
         for i in res:
-            if i[0] == 'AUTH_REQUIRED':
-                data[i[0]] = bool(int(i[1]))
-            data[i[0]] = i[1]
+            data['KEY'] = i[0]
+            data['ORIGIN_NUMBER'] = i[1]
+            data['AUTH_REQUIRED'] = i[2]
         return data
 
 
 config_db = Config(db_name=CONFIG_DBNAME, tablename=CONFIG_TABLENAME, sql=CONFIG_SQL)
 try:
-    for k, v in variable.items():
-        config_db.push(config_name=k, config_value=v)
+    config_db.push(KEY=KEY, AUTH_REQUIRED=AUTH_REQUIRED, ORIGIN_NUMBER=ORIGIN_NUMBER)
 except:
-    tornado.options.options.variable = config_db.load_config()
+    tornado.options.options.KEY = config_db.load_config().get('KEY')
+    tornado.options.options.ORIGIN_NUMBER = config_db.load_config().get('ORIGIN_NUMBER')
+    tornado.options.options.AUTH_REQUIRED = bool(config_db.load_config().get('AUTH_REQUIRED'))
