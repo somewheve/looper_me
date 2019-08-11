@@ -4,8 +4,9 @@ from application.config import MOTOR_ADDRESS, MOTOR_DATABASE
 
 
 class MotorClient:
+    client = motor.motor_asyncio.AsyncIOMotorClient(MOTOR_ADDRESS[0], MOTOR_ADDRESS[1])
+
     def __init__(self, db_name=MOTOR_DATABASE, collection_name=None):
-        self.client = motor.motor_asyncio.AsyncIOMotorClient(MOTOR_ADDRESS[0], MOTOR_ADDRESS[1])
         self.db = self.client[db_name]
         if collection_name:
             self.collection = self.db[collection_name]
