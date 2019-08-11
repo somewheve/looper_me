@@ -7,6 +7,7 @@ from application.tcp_server import md_server
 from application.common import true_return, false_return
 from application.model import blacklist_db
 
+
 class IpHandler(BaseHandle):
     def get(self):
         data = []
@@ -19,6 +20,7 @@ class IpHandler(BaseHandle):
         todo = self.get_argument('todo', None)
         if not ip or not todo: return
         print(todo, ip)
+
         if todo == 'kill':
             md_server.global_connection.pop(ip).close()
             self.write(true_return(msg='封禁成功'))
