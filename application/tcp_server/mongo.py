@@ -1,6 +1,6 @@
 import motor.motor_asyncio
 
-from application.config import MOTOR_ADDRESS, MOTOR_DATABASE
+from application.db_config import MOTOR_ADDRESS, MOTOR_DATABASE
 
 
 class MotorClient:

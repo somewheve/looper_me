@@ -1,5 +1,5 @@
-from application.global_variable import KEY
 from data_pointer.constant import AUTH_KEY
+import tornado.options
 
 
 class DataProtocol:
@@ -33,7 +33,7 @@ class DataProtocol:
         if not self.parse_result:
             # 解析失败
             return
-        if self.key == KEY:
+        if self.key == tornado.options.options.variableKEY:
             self.auth = True
 
     def __repr__(self):

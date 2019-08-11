@@ -48,7 +48,7 @@ export const constantRoutes = [{
       name: '控制台',
       component: () => import('@/views/dashboard/index'),
       meta: {
-        title: 'Ctpbee',
+        title: 'looper_me',
         icon: 'bee'
       }
     }]
