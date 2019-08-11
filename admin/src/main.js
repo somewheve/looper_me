@@ -21,7 +21,7 @@ import qs from 'qs'
 Vue.use(VueAxios, axios)
 Vue.prototype.$qs = qs
 
-const URL = 'http://10.40.25.15:8888'
+const URL = 'http://10.40.25.15:12372'
 Vue.prototype.URL = URL
 /**
  * If you don't want to use mock-server
