@@ -27,7 +27,6 @@ export default {
   methods: {
     getOriginURLData() {
       this.axios.get(this.originURL).then(data => {
-        console.log(data)
         let returnData=data.data
         if(returnData.success==true){
           this.tableData=returnData.data
@@ -53,7 +52,6 @@ export default {
           setTimeout(()=>{
             this.reload()
           },1500)
-
         }
       }).catch(err => {
         console.log(err)

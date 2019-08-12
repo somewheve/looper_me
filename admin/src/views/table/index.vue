@@ -83,12 +83,11 @@ export default {
   },
   methods: {
     search(key) {
-       this.currentPage = 1;
+      this.currentPage = 1;
       key != "" ? (this.tabFlag = false) : (this.tabFlag = true);
       let searchData = this.tableData.filter(item => {
         return item["name"].includes(key);
       });
-      console.log(this.tableData.length)
       this.searchData = searchData;
     },
     //数据分页--->每页多少数据
