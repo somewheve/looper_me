@@ -1,20 +1,29 @@
 <template>
-  <div class="fullScreen">
-    <el-col :span="12">
-      <el-row :gutter="20">
+  <div class="fullScreen" :style="height">
+    <el-col :xs="24" :sm="18" :md="10">
+      <el-row :gutter="40">
         <el-col :span="8">
           <div class="grid-content bg-purple">
-            <img src="@/assets/image/forum.png" alt="" style="width:100%">
+            <img src="@/assets/image/forum.png" alt style="width:100%" />
+            <p class="iconTitle">
+              <a href="http://47.93.26.201:3000" target="_blank" type="primary">论坛</a>
+            </p>
           </div>
         </el-col>
         <el-col :span="8">
           <div class="grid-content bg-purple">
-            <img src="@/assets/image/document.png" alt="" style="width:100%">
+            <img src="@/assets/image/document.png" alt style="width:100%" />
+            <p class="iconTitle">
+              <a href="#" target="_blank" type="primary">文档</a>
+            </p>
           </div>
         </el-col>
-         <el-col :span="8">
+        <el-col :span="8">
           <div class="grid-content bg-purple">
-            <img src="@/assets/image/qq.png" alt="" style="width:100%">
+            <img src="@/assets/image/qq.png" alt style="width:100%" />
+            <p class="iconTitle">
+              <a href="https://jq.qq.com/?_wv=1027&k=5BxlYeB" target="_blank" type="primary">交流</a>
+            </p>
           </div>
         </el-col>
       </el-row>
@@ -26,7 +35,23 @@
 export default {
   name: "Dashboard",
   data() {
-    return {};
+    return {
+      height: {
+        height: ""
+      }
+    };
+  },
+  methods: {
+    setBoxHeight() {
+      let h = window.innerHeight - 50;
+      this.height.height = h + "px";
+      window.onresize = () => {
+        this.setBoxHeight();
+      };
+    }
+  },
+  mounted() {
+    this.setBoxHeight();
   }
 };
 </script>
@@ -36,11 +61,13 @@ export default {
   margin-bottom: 20px;
 }
 .el-col {
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
 .bg-purple {
-  /* background: #eee; */
+  background: #e8e8e8;
+  padding: 10px 20px;
+  cursor: pointer;
 }
 .grid-content {
   border-radius: 4px;
@@ -52,10 +79,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 100px;
 }
-.icon {
-  color: black;
-  font-size: 20px;
+.iconTitle {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #304156;
 }
 </style>
