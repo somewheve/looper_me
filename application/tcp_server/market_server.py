@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 from ctpbee import loads
 
@@ -6,7 +7,7 @@ from application.model import blacklist_db
 from application.tcp_server.buffer import Buffer
 from application.tcp_server.constant import REPLY, REQ_TYPE, REQ_SUB, REQ_DATA, REQ_TICK
 from application.tcp_server.fancy import CoreServer
-
+from application.logger import logger
 
 class MarketServer(CoreServer):
     def __init__(self):
@@ -14,14 +15,15 @@ class MarketServer(CoreServer):
         # 全局stream对象
         self.global_connection = {}
 
-        # 数据源
-        self.tick_origin = set()
-
         # 黑名单
         self.blacklist = blacklist_db.load_ip()
 
+        self.tick_origin = set()
         self.buffers = {}
-        self.subscribed_pool = {}
+
+        # tick 订阅池子
+        self.tick_subscribe_pool = {}
+
 
         self.funcs = {}
 
@@ -35,7 +37,7 @@ class MarketServer(CoreServer):
         if address[0] in self.blacklist:
             stream.close()
             return
-        self.global_connection[address[0]] = stream
+        self.global_connection[address[0]+str(address[1])] = stream
         print(f'{address} connected!')
 
     def connection_lost(self, address: tuple, exception):
@@ -68,15 +70,18 @@ class MarketServer(CoreServer):
         # todo 校验身份 ---> 通过校验的KEY来确认身份
         address = kwargs.get("address")
         stream = kwargs.get("stream")
-        if address in self.subscribed_pool:
-            self.subscribed_pool[address].close()
-        self.subscribed_pool[address[0]] = stream
+        # 获取期货订阅
+        data = kwargs.get("content")
+        sub_data = json.loads(data)
+        future_cn = sub_data.get("future_cn")
+        for key, value in future_cn.items():
+            if "tick" in value:
+                self.tick_subscribe_pool.setdefault(key, []).append(stream)
 
     async def handler(self, type, content, stream, address):
         if type not in REQ_TYPE:
             pass
         if type == 'tick':
             self.tick_origin.add(address[0])
-            self.tick_origin
         await self.funcs[type](content=content, stream=stream, address=address)
         await stream.write(REPLY['success'])

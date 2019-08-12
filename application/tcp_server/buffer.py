@@ -6,10 +6,10 @@ import pandas as pd
 import tornado.options
 
 from application.global_variable import ORIGIN_NUMBER
-from application.tcp_server.helper import cal_feature, DatetimeEncoder
+from application.tcp_server.helper import DatetimeEncoder
+from application.tcp_server.helper import cal_feature
 from application.tcp_server.mongo import MotorClient
 from application.tcp_server.protocol import DataProtocol
-from application.tcp_server.helper import DatetimeEncoder
 
 
 class Buffer:
@@ -44,19 +44,19 @@ class Buffer:
         if self.cur_area[tick.ident_feature]['count'] >= ORIGIN_NUMBER:
             c = pd.DataFrame(self.cur_area[tick.ident_feature]['data']).set_index(['local_symbol', "datetime"]).groupby(
                 level=1).apply(lambda x: x.mode()).dropna()
+
             res = dict(zip(list(c.columns), list(c.values)[0]))
             res['datetime'] = tick.datetime
             res['local_symbol'] = tick.local_symbol
-
             # 根据订阅列表进行推送  &&  写入数据库
             ident_feature = deepcopy(res['ident_feature'])
             del res['ident_feature']
-            for stream in self.server.subscribed_pool.values():
-                if not stream.closed():
-                    data = DataProtocol.create_any(type="tick_data", data=json.dumps(res, cls=DatetimeEncoder),
-                                                   key=tornado.options.options.KEY)
-                    await stream.write(data)
-
+            if tick.local_symbol in self.server.tick_subscribe_pool.keys():
+                for stream in self.server.tick_subscribe_pool[tick.local_symbol]:
+                    if not stream.closed():
+                        data = DataProtocol.create_any(type="tick_data", data=json.dumps(res, cls=DatetimeEncoder),
+                                                       key=tornado.options.options.KEY)
+                        await stream.write(data)
             await self.motor_client.insert_one(res)
 
             # 将特征值记录到过期区中去

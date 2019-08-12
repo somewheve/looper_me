@@ -25,7 +25,7 @@ if __name__ == '__main__':
         app = make_app()
         app.listen(http_port)
         echo(
-            f"""echo '数据服务器成功启动^_^ : \n   行情服务器地址---------> tcp://127.0.0.1:{md_port}\n   交易服务器地址---------> tcp://127.0.0.1:{td_port} \n   http服务器-----------> http://127.0.0.1:{http_port}
+            f"""echo '数据服务器成功启动^_^ : \n   行情服务器地址---------> tcp://127.0.0.1:{md_port}\n   交易服务器地址---------> tcp://127.0.0.1:{td_port}  # 暂未启用\n   http服务器-----------> http://127.0.0.1:{http_port}
         '""", category="INFO")
 
     except Exception as e:
