@@ -6,6 +6,11 @@ from application import make_app
 from application.common import echo
 from application.tcp_server import md_server, trade_server
 
+from application.model import config_db
+
+config_db.system_start()
+
+
 if __name__ == '__main__':
     try:
         cfg = ConfigParser()

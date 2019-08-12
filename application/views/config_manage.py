@@ -2,14 +2,21 @@
 config views ----->
 后台管理 config视图函数
 """
+import tornado.options
+
+from application.common.response_structure import true_return
 from application.model import config_db
 from application.views import BaseHandle
-from application.common.response_structure import true_return, false_return
-import tornado.options
 
 
 class ConfigHandler(BaseHandle):
     def get(self):
+        config = {
+            "key": tornado.options.options.KEY,
+            "auth_required": int(tornado.options.options.AUTH_REQUIRED),
+            "origin_number": int(tornado.options.options.ORIGIN_NUMBER)
+        }
+
         data = config_db.load_config()
         self.write(true_return(data=data))
 

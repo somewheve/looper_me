@@ -58,10 +58,6 @@ export const constantRoutes = [{
     component: Layout,
     redirect: '/',
     name: 'data_manager',
-    meta: {
-      title: '数据管理',
-      icon: 'example'
-    },
     children: [{
         path: 'table',
         name: 'Table',
@@ -69,15 +65,6 @@ export const constantRoutes = [{
         meta: {
           title: '数据下载',
           icon: 'table'
-        }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: {
-          title: '数据查找',
-          icon: 'tree'
         }
       }
     ]
@@ -150,9 +137,9 @@ export const constantRoutes = [{
       icon: 'configure'
     },
     children: [{
-        path: 'base',
+        path: 'ext.py',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'base',
+        name: 'ext.py',
         meta: {
           title: '基础配置',
           icon:'configuration'

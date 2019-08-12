@@ -1,5 +1,5 @@
 <template>
   <div style="padding:30px;">
-    <el-alert :closable="false" title="menu 2" />
+    <h1>等待开发中，敬请期待······</h1>
   </div>
 </template>

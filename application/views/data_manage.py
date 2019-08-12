@@ -97,7 +97,6 @@ class DownloadFileHandler(BaseHandle):
         for item in results:
             if isinstance(item, dict):
                 try:
-                    print(item['datetime'])
                     item['datetime'] = datetime.strftime(item['datetime'], '%Y-%m-%d %H:%M:%S')
                 except KeyError:
                     item['datetime'] = datetime.strftime(item['datetime'], '%Y-%m-%d %H:%M:%S.%f')

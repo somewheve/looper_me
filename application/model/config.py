@@ -1,25 +1,42 @@
-from application.model.base import SqliteClient
-
-from application.db_config import CONFIG_SQL, CONFIG_TABLENAME, CONFIG_DBNAME
-from application.global_variable import KEY, ORIGIN_NUMBER, AUTH_REQUIRED
+from application.model.ext import Base, session
+from sqlalchemy import Column, Integer, String
 import tornado.options
 
 
-class Config(SqliteClient):
-    def load_config(self):
-        res = self.query('key', 'origin_number', 'auth_required')
+class Config(Base):
+    __tablename__ = 'config'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    key = Column(String(128))
+    auth_required = Column(Integer)
+    origin_number = Column(Integer)
+
+    col = ['key', 'auth_required', 'origin_number']
+
+    @classmethod
+    def load_config(cls):
+        res = session.query(cls).first()
         data = {}
-        for i in res:
-            data['KEY'] = i[0]
-            data['ORIGIN_NUMBER'] = i[1]
-            data['AUTH_REQUIRED'] = i[2]
+        for l in cls.col:
+            data[l] = getattr(res, l)
         return data
 
+    @classmethod
+    def update(cls, **kwargs):
+        model = session.query(cls).first()
+        if model:
+            for l in cls.col:
+                setattr(model, l, kwargs.get(l))
 
-config_db = Config(db_name=CONFIG_DBNAME, tablename=CONFIG_TABLENAME, sql=CONFIG_SQL)
-try:
-    config_db.push(KEY=KEY, AUTH_REQUIRED=AUTH_REQUIRED, ORIGIN_NUMBER=ORIGIN_NUMBER)
-except:
-    tornado.options.options.KEY = config_db.load_config().get('KEY')
-    tornado.options.options.ORIGIN_NUMBER = config_db.load_config().get('ORIGIN_NUMBER')
-    tornado.options.options.AUTH_REQUIRED = bool(config_db.load_config().get('AUTH_REQUIRED'))
+    @classmethod
+    def system_start(cls, **kwargs):
+        if not session.query(cls).first():
+            session.add(Config(**kwargs))
+            session.commit()
+        else:
+            data = cls.load_config()
+            for l in cls.col:
+                setattr(tornado.options.options, l.upper(), data.get(l))
+
+
+
