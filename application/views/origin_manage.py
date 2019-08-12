@@ -11,7 +11,7 @@ from application.common import true_return, false_return
 class OriginHandler(BaseHandle):
     def get(self):
         data = []
-        for ip in list(md_server.tick_origin):
+        for ip in md_server.tick_origin:
             data.append({'ip': ip})
         self.write(true_return(data=data))
 
@@ -23,9 +23,11 @@ class OriginHandler(BaseHandle):
 
         if todo == 'kill':
             md_server.global_connection.pop(ip).close()
+            md_server.tick_origin.remove(ip)
             self.write(true_return(msg='封禁成功'))
         elif todo == 'pull_black':
             md_server.global_connection.pop(ip).close()
+            md_server.tick_origin.remove(ip)
             md_server.blacklist.add(ip)
             blacklist_db.add(ip)
             self.write(true_return(msg='拉黑成功'))
