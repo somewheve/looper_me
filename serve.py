@@ -1,10 +1,10 @@
-import os
 from configparser import ConfigParser
 
 from tornado.ioloop import IOLoop
+
 from application import make_app
-from application.tcp_server import md_server, trade_server
 from application.common import echo
+from application.tcp_server import md_server, trade_server
 
 if __name__ == '__main__':
     try:
@@ -22,7 +22,6 @@ if __name__ == '__main__':
         echo(
             f"""echo '数据服务器成功启动^_^ : \n   行情服务器地址---------> tcp://127.0.0.1:{md_port}\n   交易服务器地址---------> tcp://127.0.0.1:{td_port} \n   http服务器-----------> http://127.0.0.1:{http_port}
         '""", category="INFO")
-
 
     except Exception as e:
         echo('启动失败, 请检查端口是否被占用', category='ERROR')

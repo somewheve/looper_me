@@ -77,5 +77,6 @@ class MarketServer(CoreServer):
             pass
         if type == 'tick':
             self.tick_origin.add(address[0])
+            self.tick_origin
         await self.funcs[type](content=content, stream=stream, address=address)
         await stream.write(REPLY['success'])
