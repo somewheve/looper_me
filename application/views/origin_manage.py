@@ -27,7 +27,7 @@ class OriginHandler(BaseHandle):
         elif todo == 'pull_black':
             md_server.global_connection.pop(ip).close()
             md_server.blacklist.add(ip)
-            blacklist_db.push(ip)
+            blacklist_db.add(ip)
             self.write(true_return(msg='拉黑成功'))
         else:
             self.write(false_return(msg='操作失败'))
