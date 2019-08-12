@@ -40,7 +40,6 @@ export default {
         'ip':row.ip
       }
       this.axios.post(this.blacklistURL, this.$qs.stringify(sendData)).then(data => {
-        console.log(data)
         let returnData=data.data
         if(returnData.success==true){
           this.$message({

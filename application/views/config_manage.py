@@ -10,15 +10,15 @@ import tornado.options
 
 class ConfigHandler(BaseHandle):
     def get(self):
-        data = config_db.load_config()
+        data = dict(key=tornado.options.options.KEY, auth_required=tornado.options.options.AUTH_REQUIRED,
+                    origin_number=tornado.options.options.ORIGIN_NUMBER)
         self.write(true_return(data=data))
 
     def post(self):
-        tornado.options.options.KEY = self.get_argument('KEY')
-        AUTH_REQUIRED = int(self.get_argument('AUTH_REQUIRED'))
-        tornado.options.options.AUTH_REQUIRED = bool(AUTH_REQUIRED)
-        tornado.options.options.ORIGIN_NUMBER = int(self.get_argument('ORIGIN_NUMBER'))
-        config_db.update(KEY=tornado.options.options.KEY)
-        config_db.update(AUTH_REQUIRED=AUTH_REQUIRED)
-        config_db.update(ORIGIN_NUMBER=tornado.options.options.ORIGIN_NUMBER)
+        tornado.options.options.KEY = self.get_argument('key')
+        auth_required = int(self.get_argument('auth_required'))
+        tornado.options.options.AUTH_REQUIRED = bool(auth_required)
+        tornado.options.options.ORIGIN_NUMBER = int(self.get_argument('origin_number'))
+        config_db.update(key=tornado.options.options.KEY, auth_required=auth_required,
+                         origin_number=tornado.options.options.ORIGIN_NUMBER)
         self.write(true_return(msg='更新成功'))

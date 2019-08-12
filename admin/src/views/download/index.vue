@@ -66,7 +66,6 @@ export default {
       let seriesArr = symbolArr.filter(item => {
         return item.includes(seriesSymbol);
       });
-
       if (type == "timeDownload") {
         if (time == "") {
           return this.$message.error("请选择时间段!");
@@ -92,7 +91,7 @@ export default {
         start: start,
         end: end
       };
-      
+
       this.axios
         .post(this.downloadURL, this.$qs.stringify(sendData), {
           responseType: "blob"

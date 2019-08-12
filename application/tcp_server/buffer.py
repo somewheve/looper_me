@@ -9,6 +9,7 @@ from application.global_variable import ORIGIN_NUMBER
 from application.tcp_server.helper import cal_feature, DatetimeEncoder
 from application.tcp_server.mongo import MotorClient
 from application.tcp_server.protocol import DataProtocol
+from application.tcp_server.helper import DatetimeEncoder
 
 
 class Buffer:
@@ -65,4 +66,3 @@ class Buffer:
             self.cur_area.pop(ident_feature, None)
             del ident_feature
             return
-
