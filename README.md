@@ -25,7 +25,7 @@ ctpbee 使用的数据服务器
 
 - 安装依赖
   ```
-  pip install -r requriement
+  pip install -r requirement
   ```
 ## 启动服务端
 `python serve.py `

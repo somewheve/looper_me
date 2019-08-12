@@ -150,9 +150,9 @@ export const constantRoutes = [{
       icon: 'configure'
     },
     children: [{
-        path: 'base',
+        path: 'ext.py',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'base',
+        name: 'ext.py',
         meta: {
           title: '基础配置',
           icon:'configuration'

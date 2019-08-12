@@ -23,7 +23,7 @@ class BlacklistHandler(BaseHandle):
 
         if todo == 'alive':
             md_server.blacklist.remove(ip)
-            blacklist_db.pop(ip)
+            blacklist_db.delete(ip)
             self.write(true_return(msg='解封成功'))
         else:
             self.write(false_return(msg='解封失败'))
