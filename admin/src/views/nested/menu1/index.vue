@@ -6,28 +6,28 @@
         <th>状态</th>
       </tr>
       <tr>
-        <td>AUTH_REQUIRED</td>
+        <td>auth_required</td>
         <td>
-          <el-switch v-model="AUTH_REQUIRED"></el-switch>
+          <el-switch v-model="auth_required"></el-switch>
         </td>
       </tr>
       <tr>
-        <td>KEY</td>
+        <td>key</td>
         <td>
-          <el-input v-model="KEY" placeholder="请输入KEY"></el-input>
+          <el-input v-model="key" placeholder="请输入key"></el-input>
         </td>
       </tr>
       <tr>
-        <td>ORIGIN_NUMBER</td>
+        <td>origin_number</td>
         <td>
-          <el-input v-model="ORIGIN_NUMBER" placeholder="请输入ORIGIN_NUMBER"></el-input>
+          <el-input v-model="origin_number" placeholder="请输入origin_number"></el-input>
         </td>
       </tr>
     </table>
     <el-button
       type="success"
       icon="el-icon-check"
-      @click="onSubmit(AUTH_REQUIRED,KEY,ORIGIN_NUMBER)"
+      @click="onSubmit(auth_required,key,origin_number)"
     >保存</el-button>
   </div>
 </template>
@@ -36,9 +36,9 @@ export default {
   inject: ["reload"],
   data() {
     return {
-      AUTH_REQUIRED: false,
-      KEY: "",
-      ORIGIN_NUMBER: "",
+      auth_required: false,
+      key: "",
+      origin_number: "",
       configURL: this.URL + "/config_manage"
     };
   },
@@ -50,26 +50,26 @@ export default {
       })
         .then(data => {
           let returnData = data.data.data;
-          this.AUTH_REQUIRED = returnData.AUTH_REQUIRED == 1 ? true : false;
-          this.KEY = returnData.KEY;
-          this.ORIGIN_NUMBER = returnData.ORIGIN_NUMBER;
+          this.auth_required = returnData.auth_required == 1 ? true : false;
+          this.key = returnData.key;
+          this.origin_number = returnData.origin_number;
         })
         .catch(err => {
           console.log(err);
         });
     },
-    onSubmit(AUTH_REQUIRED, KEY, ORIGIN_NUMBER) {
-      let flag = AUTH_REQUIRED == true ? 1 : 0;
-      if (KEY == "" || ORIGIN_NUMBER == "") {
+    onSubmit(auth_required, key, origin_number) {
+      let flag = auth_required == true ? 1 : 0;
+      if (key == "" || origin_number == "") {
         return this.$message({
           message: "内容不能为空!",
           type: "error"
         });
       }
       let sendData = {
-        AUTH_REQUIRED: flag,
-        KEY: KEY,
-        ORIGIN_NUMBER: ORIGIN_NUMBER
+        auth_required: flag,
+        key: key,
+        origin_number: origin_number
       };
       this.axios
         .post(this.configURL, this.$qs.stringify(sendData))
