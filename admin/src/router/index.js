@@ -58,10 +58,6 @@ export const constantRoutes = [{
     component: Layout,
     redirect: '/',
     name: 'data_manager',
-    meta: {
-      title: '数据管理',
-      icon: 'example'
-    },
     children: [{
         path: 'table',
         name: 'Table',
@@ -69,15 +65,6 @@ export const constantRoutes = [{
         meta: {
           title: '数据下载',
           icon: 'table'
-        }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: {
-          title: '数据查找',
-          icon: 'tree'
         }
       }
     ]

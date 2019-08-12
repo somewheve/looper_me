@@ -92,7 +92,7 @@ export default {
         start: start,
         end: end
       };
-
+      
       this.axios
         .post(this.downloadURL, this.$qs.stringify(sendData), {
           responseType: "blob"
