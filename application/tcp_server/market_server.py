@@ -73,6 +73,7 @@ class MarketServer(CoreServer):
         # 获取期货订阅
         data = kwargs.get("content")
         sub_data = json.loads(data)
+        # 期货订阅代码
         future_cn = sub_data.get("future_cn")
         for key, value in future_cn.items():
             if "tick" in value:
