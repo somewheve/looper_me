@@ -17,7 +17,7 @@ class Blacklist(Base):
 
     @classmethod
     def add(cls, ip):
-        session.add(Blacklist(ip=ip))
+        session.add(cls(ip=ip))
         session.commit()
 
     @classmethod

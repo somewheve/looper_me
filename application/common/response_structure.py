@@ -2,16 +2,16 @@ import json
 
 
 def true_return(msg='', data=''):
-    return json.dumps({
+    return {
         'success': True,
         'msg': msg,
         'data': data
-    })
+    }
 
 
 def false_return(msg='', data=''):
-    return json.dumps({
+    return {
         'success': False,
         'msg': msg,
         'data': data
-    })
+    }

@@ -25,6 +25,7 @@ ctpbee 使用的数据服务器
 - 安装依赖
   ```
   pip install -r requirement
+  如jwt报错 请手动:pip install PyJWT
   ```
 ## 启动服务端
 `python serve.py `

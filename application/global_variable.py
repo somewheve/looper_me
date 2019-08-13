@@ -9,7 +9,10 @@ import tornado.options
 KEY = "fancy"  # 默认的KEY ---> 是可以进行key管理的， 同时key只能被同一个ip进行使用.....
 AUTH_REQUIRED = 1  # 1 | 0 是否开启key进行校验身份
 ORIGIN_NUMBER = 1
+JWT_SECRET_KEY = '6bWx402653FFcfbb3b5b2a368f640fea'
 
 tornado.options.define("KEY", default=KEY, type=str)
 tornado.options.define("AUTH_REQUIRED", default=True, type=bool)
 tornado.options.define("ORIGIN_NUMBER", default=ORIGIN_NUMBER, type=int)
+
+tornado.options.define('HASH', default=set(), type=set)

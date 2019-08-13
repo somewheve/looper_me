@@ -65,7 +65,7 @@ class Client:
 
 
 if __name__ == '__main__':
-    HOST = '127.0.0.1'  # The remote host
+    HOST = '10.40.25.18'  # The remote host
     PORT = 12572  # The same port as used by the server
     address = (HOST, PORT)
     client = Client()

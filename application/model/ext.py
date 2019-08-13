@@ -11,5 +11,6 @@ session = sessionmaker(bind=engine)()
 
 import application.model.config
 import application.model.blacklist
+import application.model.admin
 
 Base.metadata.create_all(engine)
