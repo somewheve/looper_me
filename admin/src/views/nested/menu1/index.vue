@@ -36,6 +36,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      token: "",
       auth_required: false,
       key: "",
       origin_number: "",
@@ -46,13 +47,22 @@ export default {
     getConfigData() {
       this.axios({
         url: this.configURL,
-        methods: "get"
+        methods: "get",
+        headers: {
+          Authorization: "JWT " + this.token
+        }
       })
         .then(data => {
-          let returnData = data.data.data;
-          this.auth_required = returnData.auth_required == 1 ? true : false;
-          this.key = returnData.key;
-          this.origin_number = returnData.origin_number;
+          let returnData = data.data;
+          if (returnData.success == true) {
+            let res = returnData.data;
+            this.auth_required = res.auth_required == 1 ? true : false;
+            this.key = res.key;
+            this.origin_number = res.origin_number;
+          }else if (returnData.success == false && returnData.token == false) {
+            this.logout();
+            sessionStorage.removeItem("token");
+          }
         })
         .catch(err => {
           console.log(err);
@@ -72,7 +82,11 @@ export default {
         origin_number: origin_number
       };
       this.axios
-        .post(this.configURL, this.$qs.stringify(sendData))
+        .post(this.configURL, this.$qs.stringify(sendData), {
+          headers: {
+            Authorization: "JWT " + this.token
+          }
+        })
         .then(data => {
           let returnData = data.data;
           if (returnData.success == true) {
@@ -83,14 +97,28 @@ export default {
             setTimeout(() => {
               this.reload();
             }, 1500);
+          }else if (returnData.success == false && returnData.token == false) {
+            this.logout();
+            sessionStorage.removeItem("token");
+          }else {
+            this.$message({
+              showClose: true,
+              message: returnData.msg,
+              type: "error"
+            });
           }
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    async logout() {
+      await this.$store.dispatch("user/logout");
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     }
   },
   mounted() {
+    this.token = sessionStorage.getItem("token");
     this.getConfigData();
   }
 };

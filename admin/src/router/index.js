@@ -40,6 +40,20 @@ export const constantRoutes = [{
     hidden: true
   },
   {
+    path: '/changePassword',
+    component: Layout,
+    redirect:'/changePassword/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'changePassword',
+      component: () => import('@/views/changePsd/index'),
+      meta: {
+        title: '修改密码'
+      }
+    }]
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',

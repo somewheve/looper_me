@@ -18,11 +18,11 @@
           <i class="el-icon-download el-icon--right"></i>
         </el-button>
         <el-button type="success" size="medium" @click="download('singleVarietyDownload')">
-           单品种下载
+          单品种下载
           <i class="el-icon-download el-icon--right"></i>
         </el-button>
         <el-button type="warning" size="medium" @click="download('seriesDownload')">
-           同系列下载
+          同系列下载
           <i class="el-icon-download el-icon--right"></i>
         </el-button>
       </el-button-group>
@@ -35,6 +35,7 @@ export default {
   name: "download",
   data() {
     return {
+      token: "",
       downloadURL: this.URL + "/file",
       symbol: "",
       time: ""
@@ -91,11 +92,15 @@ export default {
         start: start,
         end: end
       };
-
-      this.axios
-        .post(this.downloadURL, this.$qs.stringify(sendData), {
-          responseType: "blob"
-        })
+      this.axios({
+        method: "post",
+        url: this.downloadURL,
+        data: this.$qs.stringify(sendData),
+        headers: {
+          Authorization: "JWT " + this.token
+        },
+        responseType: "blob"
+      })
         .then(data => {
           let blob = data.data;
           let reader = new FileReader();
@@ -110,9 +115,20 @@ export default {
           };
         })
         .catch(err => {
-          console.log(err);
+          let statusCode = err.response.status;
+          if (statusCode === 302) {
+            this.logout();
+            sessionStorage.removeItem("token");
+          }
         });
+    },
+    async logout() {
+      await this.$store.dispatch("user/logout");
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     }
+  },
+  mounted() {
+    this.token = sessionStorage.getItem("token");
   }
 };
 </script>
@@ -141,8 +157,8 @@ export default {
 </style>
 
 <style>
-  /* 覆盖element-ui的样式（注意：此处不能加scope,否则无效）*/
-  .symbolDetail .el-date-editor .el-range-separator {
-    padding: 0;
-  }
+/* 覆盖element-ui的样式（注意：此处不能加scope,否则无效）*/
+.symbolDetail .el-date-editor .el-range-separator {
+  padding: 0;
+}
 </style>
