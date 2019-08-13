@@ -2,12 +2,13 @@ import asyncio
 import json
 
 from ctpbee import loads
-
+from application.common import echo
 from application.model import blacklist_db
 from application.tcp_server.buffer import Buffer
 from application.tcp_server.constant import REPLY, REQ_TYPE, REQ_SUB, REQ_DATA, REQ_TICK
 from application.tcp_server.fancy import CoreServer
 from application.logger import logger
+
 
 class MarketServer(CoreServer):
     def __init__(self):
@@ -24,7 +25,6 @@ class MarketServer(CoreServer):
         # tick 订阅池子
         self.tick_subscribe_pool = {}
 
-
         self.funcs = {}
 
         # 缓冲区
@@ -37,8 +37,8 @@ class MarketServer(CoreServer):
         if address[0] in self.blacklist:
             stream.close()
             return
-        self.global_connection[address[0]+str(address[1])] = stream
-        print(f'{address} connected!')
+        self.global_connection[address[0]] = stream
+        echo(f'{address} connected!', falg='INFO')
 
     def connection_lost(self, address: tuple, exception):
         pass

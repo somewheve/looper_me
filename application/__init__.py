@@ -5,6 +5,7 @@ from application.views.config_manage import ConfigHandler
 from application.views.data_manage import DataHandler, DownloadFileHandler
 from application.views.ip_manage import IpHandler
 from application.views.origin_manage import OriginHandler
+from application.views.admin_manage import AdminLoginHandler, AdminChangepwdHandler
 
 
 def make_app():
@@ -14,6 +15,8 @@ def make_app():
         (r'/blacklist_manage', BlacklistHandler),
         (r'/data_manage', DataHandler),
         (r'/file', DownloadFileHandler),
-        (r'/config_manage', ConfigHandler)
+        (r'/config_manage', ConfigHandler),
+        (r'/login', AdminLoginHandler),
+        (r'/change_pwd', AdminChangepwdHandler),
 
     ])
