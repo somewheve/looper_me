@@ -55,8 +55,9 @@ class Client:
             data = self.sock.recv(4096)
             self.process(TransferProtocol(data))
 
-    def process(self, data):
-        print(data)
+    def process(self, data: TransferProtocol):
+        """ 处理你的数据 """
+        print(data.content)
 
     def subscribe(self, req):
         self.sock.send(req)
