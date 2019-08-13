@@ -102,8 +102,13 @@ export default {
       this.$router.push({path:'/download/index',query:{symbolName:symbol}})
     },
     getData() {
+      let token = sessionStorage.getItem("token");
       this.axios
-        .get(this.dataDownLoadURL)
+        .get(this.dataDownLoadURL,{
+          headers: {
+            Authorization: "JWT " + token
+          }
+        })
         .then(data => {
           let returnData = data.data;
           if (returnData.success == true) {
@@ -121,11 +126,18 @@ export default {
               symbolArr.push(returnData.data[i]['name'])
             }
             sessionStorage.setItem('symbolArr',JSON.stringify(symbolArr))
+          }else if (returnData.success == false && returnData.token == false) {
+            this.logout();
+            sessionStorage.removeItem("token");
           }
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    async logout() {
+      await this.$store.dispatch("user/logout");
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     }
   }
 };
