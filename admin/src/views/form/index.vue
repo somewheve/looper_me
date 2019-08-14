@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       ipURL: this.URL + "/ip_manage",
-      token:"",
+      token: "",
       tableData: []
     };
   },
@@ -27,7 +27,7 @@ export default {
   methods: {
     getIpData() {
       this.axios
-        .get(this.ipURL,{
+        .get(this.ipURL, {
           headers: {
             Authorization: "JWT " + this.token
           }
@@ -36,6 +36,15 @@ export default {
           let returnData = data.data;
           if (returnData.success == true) {
             this.tableData = returnData.data;
+          } else if (returnData.success == false && returnData.token == false) {
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
           }
         })
         .catch(err => {
@@ -48,7 +57,7 @@ export default {
         ip: row.ip
       };
       this.axios
-        .post(this.ipURL, this.$qs.stringify(sendData),{
+        .post(this.ipURL, this.$qs.stringify(sendData), {
           headers: {
             Authorization: "JWT " + this.token
           }
@@ -65,8 +74,14 @@ export default {
               this.reload();
             }, 1500);
           } else if (returnData.success == false && returnData.token == false) {
-            this.logout();
-            sessionStorage.removeItem("token");
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
           } else {
             this.$message({
               showClose: true,
@@ -85,7 +100,7 @@ export default {
         ip: row.ip
       };
       this.axios
-        .post(this.ipURL, this.$qs.stringify(sendData),{
+        .post(this.ipURL, this.$qs.stringify(sendData), {
           headers: {
             Authorization: "JWT " + this.token
           }
@@ -101,16 +116,35 @@ export default {
             setTimeout(() => {
               this.reload();
             }, 1500);
+          } else if (returnData.success == false && returnData.token == false) {
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
+          } else {
+            this.$message({
+              showClose: true,
+              message: returnData.msg,
+              type: "error"
+            });
           }
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    async logout() {
+      await this.$store.dispatch("user/logout");
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     }
   },
 
   mounted() {
-    this.token=sessionStorage.getItem("token")
+    this.token = sessionStorage.getItem("token");
     this.getIpData();
   }
 };

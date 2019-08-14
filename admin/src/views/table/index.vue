@@ -30,7 +30,7 @@
         >
           <el-table-column prop="name" label="名称"></el-table-column>
           <el-table-column label="操作">
-             <template slot-scope="scope">
+            <template slot-scope="scope">
               <el-button size="mini" type="success" @click="see(scope.row.name)">查看</el-button>
             </template>
           </el-table-column>
@@ -45,9 +45,9 @@
       >
         <el-table-column prop="name" label="名称"></el-table-column>
         <el-table-column label="操作">
-           <template slot-scope="scope">
-              <el-button size="mini" type="success" @click="see(scope.row.name)">查看</el-button>
-            </template>
+          <template slot-scope="scope">
+            <el-button size="mini" type="success" @click="see(scope.row.name)">查看</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -98,13 +98,16 @@ export default {
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
     },
-    see(symbol){
-      this.$router.push({path:'/download/index',query:{symbolName:symbol}})
+    see(symbol) {
+      this.$router.push({
+        path: "/download/index",
+        query: { symbolName: symbol }
+      });
     },
     getData() {
       let token = sessionStorage.getItem("token");
       this.axios
-        .get(this.dataDownLoadURL,{
+        .get(this.dataDownLoadURL, {
           headers: {
             Authorization: "JWT " + token
           }
@@ -121,18 +124,25 @@ export default {
               return index % 2 != 0;
             });
 
-            let symbolArr=[]
-            for (let i in returnData.data){
-              symbolArr.push(returnData.data[i]['name'])
+            let symbolArr = [];
+            for (let i in returnData.data) {
+              symbolArr.push(returnData.data[i]["name"]);
             }
-            sessionStorage.setItem('symbolArr',JSON.stringify(symbolArr))
-          }else if (returnData.success == false && returnData.token == false) {
-            this.logout();
-            sessionStorage.removeItem("token");
+            sessionStorage.setItem("symbolArr", JSON.stringify(symbolArr));
           }
         })
         .catch(err => {
-          console.log(err);
+          let statusCode = err.response.status;
+          if (statusCode === 302) {
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
+          }
         });
     },
     async logout() {
