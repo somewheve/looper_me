@@ -24,8 +24,10 @@ class OriginHandler(BaseHandle):
         if not ip or not todo: return
         echo(todo, ip)
 
-        md_server.global_connection.pop(ip).close()  # 断开连接
-        md_server.tick_origin.remove(ip)  # 源服务器弹出
+        if ip in md_server.global_connection:
+            md_server.global_connection.pop(ip).close()  # 断开连接
+        if ip in md_server.tick_origin:
+            md_server.tick_origin.remove(ip)  # 源服务器弹出
 
         if todo == 'kill':
             self.write(true_return(msg='封禁成功'))

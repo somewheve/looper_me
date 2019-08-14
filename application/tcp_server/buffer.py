@@ -50,7 +50,7 @@ class Buffer:
             res = dict(zip(list(c.columns), list(c.values)[0]))
             res['datetime'] = tick.datetime
             res['local_symbol'] = tick.local_symbol
-            # 根据订阅列表进行推送  &&  写入数据库
+            # 根据订阅列表进行推送
             ident_feature = deepcopy(res['ident_feature'])
             del res['ident_feature']
             self.i += 1
@@ -60,7 +60,7 @@ class Buffer:
                         data = DataProtocol.create_any(type="tick_data", data=json.dumps(res, cls=DatetimeEncoder),
                                                        key=tornado.options.options.KEY)
                         await stream.write(data)
-
+            #写入数据库
             await self.motor_client.insert_one(res)
 
             # 将特征值记录到过期区中去

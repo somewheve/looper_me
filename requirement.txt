@@ -2,7 +2,7 @@ asn1crypto==0.24.0
 blinker==1.4
 cffi==1.12.3
 Click==7.0
-colour-printing==0.0.8
+colour-printing==0.0.9
 cryptography==2.7
 ctpbee==0.24
 dataclasses==0.6

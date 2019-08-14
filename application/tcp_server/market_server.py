@@ -34,10 +34,11 @@ class MarketServer(CoreServer):
         self._register_handle_func()
 
     def connection_made(self, address, stream):
-        if address[0] in self.blacklist:
+        s = address[0] + ":" + str(address[1])
+        if s in self.blacklist:
             stream.close()
             return
-        self.global_connection[address[0]] = stream
+        self.global_connection[s] = stream
         echo(f'{address} connected!', falg='INFO')
 
     def connection_lost(self, address: tuple, exception):
@@ -83,6 +84,6 @@ class MarketServer(CoreServer):
         if type not in REQ_TYPE:
             pass
         if type == 'tick':
-            self.tick_origin.add(address[0])
+            self.tick_origin.add(address[0] + ":" + str(address[1]))
         await self.funcs[type](content=content, stream=stream, address=address)
         await stream.write(REPLY['success'])
