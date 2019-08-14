@@ -117,8 +117,14 @@ export default {
         .catch(err => {
           let statusCode = err.response.status;
           if (statusCode === 302) {
-            this.logout();
-            sessionStorage.removeItem("token");
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
           }
         });
     },

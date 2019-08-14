@@ -17,7 +17,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
-      token:"",
+      token: "",
       blacklistURL: this.URL + "/blacklist_manage",
       tableData: []
     };
@@ -25,7 +25,7 @@ export default {
   methods: {
     getBlackHouseData() {
       this.axios
-        .get(this.blacklistURL,{
+        .get(this.blacklistURL, {
           headers: {
             Authorization: "JWT " + this.token
           }
@@ -34,9 +34,15 @@ export default {
           let returnData = data.data;
           if (returnData.success == true) {
             this.tableData = returnData.data;
-          }else if (returnData.success == false && returnData.token == false) {
-            this.logout();
-            sessionStorage.removeItem("token");
+          } else if (returnData.success == false && returnData.token == false) {
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
           }
         })
         .catch(err => {
@@ -49,7 +55,7 @@ export default {
         ip: row.ip
       };
       this.axios
-        .post(this.blacklistURL, this.$qs.stringify(sendData),{
+        .post(this.blacklistURL, this.$qs.stringify(sendData), {
           headers: {
             Authorization: "JWT " + this.token
           }
@@ -65,10 +71,16 @@ export default {
               this.reload();
             }, 1500);
           } else if (returnData.success == false && returnData.token == false) {
-            this.logout();
-            sessionStorage.removeItem("token");
-          }else{
-             this.$message({
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
+          } else {
+            this.$message({
               message: returnData.msg,
               type: "error"
             });
