@@ -13,7 +13,7 @@ class BlacklistHandler(BaseHandle):
     @auth_required
     def get(self):
         data = []
-        for ip in list(blacklist_db.load_ip()):
+        for ip in md_server.blacklist:
             data.append({'ip': ip})
         self.write(true_return(data=data))
 
@@ -25,9 +25,11 @@ class BlacklistHandler(BaseHandle):
         echo(todo, ip)
 
         if todo == 'alive':
-            md_server.blacklist.remove(ip)
+            if ip in md_server.blacklist:
+                md_server.blacklist.remove(ip)
 
             blacklist_db.delete(ip)
+
             self.write(true_return(msg='解封成功'))
         else:
             self.write(false_return(msg='解封失败'))
