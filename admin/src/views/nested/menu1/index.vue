@@ -59,9 +59,15 @@ export default {
             this.auth_required = res.auth_required == 1 ? true : false;
             this.key = res.key;
             this.origin_number = res.origin_number;
-          }else if (returnData.success == false && returnData.token == false) {
-            this.logout();
-            sessionStorage.removeItem("token");
+          } else if (returnData.success == false && returnData.token == false) {
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
           }
         })
         .catch(err => {
@@ -97,10 +103,16 @@ export default {
             setTimeout(() => {
               this.reload();
             }, 1500);
-          }else if (returnData.success == false && returnData.token == false) {
-            this.logout();
-            sessionStorage.removeItem("token");
-          }else {
+          } else if (returnData.success == false && returnData.token == false) {
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
+          } else {
             this.$message({
               showClose: true,
               message: returnData.msg,

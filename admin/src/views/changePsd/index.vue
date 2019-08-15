@@ -40,12 +40,12 @@
   </div>
 </template>
 <script>
-import { setTimeout } from 'timers';
+import { setTimeout } from "timers";
 export default {
   name: "changePassword",
   data() {
     return {
-      token:"",
+      token: "",
       changePsdURL: this.URL + "/change_pwd",
       height: {
         height: ""
@@ -93,7 +93,7 @@ export default {
         })
         .then(data => {
           let returnData = data.data;
-          console.log(returnData)
+          console.log(returnData);
           if (returnData.success == true) {
             this.$message({
               showClose: true,
@@ -105,8 +105,14 @@ export default {
               sessionStorage.removeItem("token");
             }, 1000);
           } else if (returnData.success == false && returnData.token == false) {
-            this.logout();
-            sessionStorage.removeItem("token");
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
           } else {
             this.$message({
               showClose: true,
@@ -120,9 +126,9 @@ export default {
         });
     },
     resetForm() {
-      this.formPsd.originalPsd = "";
-      this.formPsd.newPsd = "";
-      this.formPsd.againPsd = "";
+      this.formPsd.old_pwd = "";
+      this.formPsd.new_pwd1 = "";
+      this.formPsd.new_pwd2 = "";
     },
     async logout() {
       await this.$store.dispatch("user/logout");

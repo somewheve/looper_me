@@ -4,26 +4,26 @@
       <el-row :gutter="40">
         <el-col :span="8">
           <div class="grid-content bg-purple">
-            <img src="@/assets/image/forum.png" alt style="width:100%" />
-            <p class="iconTitle">
-              <a href="http://47.93.26.201:3000" target="_blank" type="primary">论坛</a>
-            </p>
+            <a href="http://47.93.26.201:3000" target="_blank">
+              <img src="@/assets/image/forum.png" alt style="width:100%" />
+              <p class="iconTitle">论坛</p>
+            </a>
           </div>
         </el-col>
         <el-col :span="8">
           <div class="grid-content bg-purple">
-            <img src="@/assets/image/document.png" alt style="width:100%" />
-            <p class="iconTitle">
-              <a href="#" target="_blank" type="primary">文档</a>
-            </p>
+            <a href="#" target="_blank" type="primary">
+              <img src="@/assets/image/document.png" alt style="width:100%" />
+              <p class="iconTitle">文档</p>
+            </a>
           </div>
         </el-col>
         <el-col :span="8">
           <div class="grid-content bg-purple">
-            <img src="@/assets/image/qq.png" alt style="width:100%" />
-            <p class="iconTitle">
-              <a href="https://jq.qq.com/?_wv=1027&k=5BxlYeB" target="_blank" type="primary">交流</a>
-            </p>
+            <a href="https://jq.qq.com/?_wv=1027&k=5BxlYeB" target="_blank" type="primary">
+              <img src="@/assets/image/qq.png" alt style="width:100%" />
+              <p class="iconTitle">交流</p>
+            </a>
           </div>
         </el-col>
       </el-row>
@@ -36,6 +36,7 @@ export default {
   name: "Dashboard",
   data() {
     return {
+      token: "",
       height: {
         height: ""
       }
@@ -48,9 +49,17 @@ export default {
       window.onresize = () => {
         this.setBoxHeight();
       };
+    },
+    async logout() {
+      await this.$store.dispatch("user/logout");
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     }
   },
   mounted() {
+    this.token = sessionStorage.getItem("token");
+    if (this.token == "") {
+      this.logout();
+    }
     this.setBoxHeight();
   }
 };

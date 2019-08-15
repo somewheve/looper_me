@@ -57,7 +57,8 @@
 
 <script>
 import { validUsername } from "@/utils/validate";
-import { setTimeout } from 'timers';
+import { async } from 'q';
+// import { setTimeout } from 'timers';
 
 export default {
   name: "Login",
@@ -146,7 +147,7 @@ export default {
               type: "success"
             });
             setTimeout(()=>{
-              this.$router.push({ path: this.redirect || "/" });
+              this.$router.push({ path: "/" });
             },1000)
           }else{
             this.$message({

@@ -36,8 +36,14 @@ export default {
           if (returnData.success == true) {
             this.tableData = returnData.data;
           } else if (returnData.success == false && returnData.token == false) {
-            this.logout();
-            sessionStorage.removeItem("token");
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
           }
         })
         .catch(err => {
@@ -67,8 +73,14 @@ export default {
               this.reload();
             }, 1500);
           } else if (returnData.success == false && returnData.token == false) {
-            this.logout();
-            sessionStorage.removeItem("token");
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
           } else {
             this.$message({
               showClose: true,
@@ -103,9 +115,15 @@ export default {
             setTimeout(() => {
               this.reload();
             }, 1500);
-          }else if (returnData.success == false && returnData.token == false) {
-            this.logout();
-            sessionStorage.removeItem("token");
+          } else if (returnData.success == false && returnData.token == false) {
+            setTimeout(() => {
+              this.$message({
+                message: "登录信息已过期,请重新登录!",
+                type: "error"
+              });
+              this.logout();
+              sessionStorage.removeItem("token");
+            }, 100);
           } else {
             this.$message({
               showClose: true,
