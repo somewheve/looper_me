@@ -35,13 +35,15 @@ async def filter(collection: list, start: datetime = None, end: datetime = None)
         else:
             condition = {}
         cursor = motor_client.collection.find(condition).sort('datetime')
+        temp = []
         async for document in cursor:
             try:
                 document['datetime'] = datetime.strftime(document['datetime'], '%Y-%m-%d %H:%M:%S')
             except KeyError:
                 document['datetime'] = datetime.strftime(document['datetime'], '%Y-%m-%d %H:%M:%S.%f')
             document.pop('_id', None)
-        data[colle] = document
+            temp.append(document)
+        data[colle] = temp
         # data[colle] = [document async for document in cursor if document.pop('_id', None) or 1]
     return data
 
@@ -63,7 +65,7 @@ class DownloadFileHandler(BaseHandle):
         code = self.get_argument('code')
         start = self.get_argument('start', None)
         end = self.get_argument('end', None)
-        csv = self.get_argument('csv', None)
+        csv = bool(int(self.get_argument('csv', '0')))
         filename = ''
         """ 检查参数,转换参数,设定文件名"""
         if not code:
@@ -79,19 +81,19 @@ class DownloadFileHandler(BaseHandle):
         except ValueError:
             self.write(false_return(msg='日期参数格式错误'))
             return
-        filename = '{}{}.csv'.format(filename, code[0] if len(code) == 1 else 'Many')
-
+        filename = '{}{}.csv'.format(filename,
+                                     code[0] if len(code) == 1 else ''.join(
+                                         [i for i in code[0] if not i.isdigit()]) + '系列')
         echo(type(code), code)
 
         """ 过滤查询 """
         results = await filter(code, start, end)
-
         if csv:
             """dataframe 处理 """
             df = pd.DataFrame()
             for k, v in results.items():
                 df = pd.DataFrame(v, index=[k] * len(v))
-            # df == Dataframe
+            #
             data_csv = f" ,{str(list(df)).replace('[', '').replace(']', '')}"
             for row in df.itertuples():
                 temp = str(list(row)).replace('[', '').replace(']', '')
