@@ -15,4 +15,3 @@ tornado.options.define("KEY", default=KEY, type=str)
 tornado.options.define("AUTH_REQUIRED", default=True, type=bool)
 tornado.options.define("ORIGIN_NUMBER", default=ORIGIN_NUMBER, type=int)
 
-tornado.options.define('HASH', default=set(), type=set)
