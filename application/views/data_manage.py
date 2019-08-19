@@ -8,31 +8,43 @@ from application.views import BaseHandle
 from application.common import true_return, false_return, echo
 from application.tcp_server.mongo import MotorClient
 from application.views.auth import coroutine_auth_required
+import pandas as pd
 
 
-async def filter(collection: list, start: datetime = None, end: datetime = None, download: bool = False):
-    data = []
+async def filter(collection: list, start: datetime = None, end: datetime = None):
+    """
+    :param collection:
+    :param start:
+    :param end:
+    :return:
+            data = {
+                    'zn1908.SHFE':[{},{}],
+                    'zn1909.SHFE':[{},{},{}],
+                    }
+    """
+    data = {}
     for colle in collection:
-        """分隔每个种类"""
-        if download:
-            data.append(colle)
         """  对应条件查询 """
         motor_client = MotorClient(collection_name=colle)
         if start and end:
-            cursor = motor_client.collection.find({"datetime": {'$gte': start, '$lte': end}}).sort('datetime')
-            data.extend([document async for document in cursor if document.pop('_id', None) or 1])
-            continue
+            condition = {"datetime": {'$gte': start, '$lte': end}}
         elif start:
-            cursor = motor_client.collection.find({"datetime": {'$gte': start}}).sort('datetime')
-            data.extend([document async for document in cursor if document.pop('_id', None) or 1])
-            continue
+            condition = {"datetime": {'$gte': start}}
         elif end:
-            cursor = motor_client.collection.find({"datetime": {'$lte': end}}).sort('datetime')
-            data.extend([document async for document in cursor if document.pop('_id', None) or 1])
-            continue
+            condition = {"datetime": {'$lte': end}}
         else:
-            cursor = motor_client.collection.find()
-            data.extend([document async for document in cursor if document.pop('_id', None) or 1])
+            condition = {}
+        cursor = motor_client.collection.find(condition).sort('datetime')
+        temp = []
+        async for document in cursor:
+            try:
+                document['datetime'] = datetime.strftime(document['datetime'], '%Y-%m-%d %H:%M:%S')
+            except KeyError:
+                document['datetime'] = datetime.strftime(document['datetime'], '%Y-%m-%d %H:%M:%S.%f')
+            document.pop('_id', None)
+            temp.append(document)
+        data[colle] = temp
+        # data[colle] = [document async for document in cursor if document.pop('_id', None) or 1]
     return data
 
 
@@ -53,8 +65,8 @@ class DownloadFileHandler(BaseHandle):
         code = self.get_argument('code')
         start = self.get_argument('start', None)
         end = self.get_argument('end', None)
+        csv = bool(int(self.get_argument('csv', '0')))
         filename = ''
-        data_csv = ''
         """ 检查参数,转换参数,设定文件名"""
         if not code:
             return
@@ -69,22 +81,31 @@ class DownloadFileHandler(BaseHandle):
         except ValueError:
             self.write(false_return(msg='日期参数格式错误'))
             return
-        filename = '{}{}.csv'.format(filename, code[0] if len(code) == 1 else 'Many')
-
+        filename = '{}{}.csv'.format(filename,
+                                     code[0] if len(code) == 1 else ''.join(
+                                         [i for i in code[0] if not i.isdigit()]) + '系列')
         echo(type(code), code)
 
         """ 过滤查询 """
-        results = await filter(code, start, end, download=True)
-
-        """ 处理 """
-        for item in results:
-            if isinstance(item, dict):
-                try:
-                    item['datetime'] = datetime.strftime(item['datetime'], '%Y-%m-%d %H:%M:%S')
-                except KeyError:
-                    item['datetime'] = datetime.strftime(item['datetime'], '%Y-%m-%d %H:%M:%S.%f')
-            item = str(item).replace('{', '').replace('}', '')
-            data_csv += '{},\r\n'.format(item, )
+        results = await filter(code, start, end)
+        if csv:
+            """dataframe 处理 """
+            df = pd.DataFrame()
+            for k, v in results.items():
+                df = pd.DataFrame(v, index=[k] * len(v))
+            #
+            data_csv = f" ,{str(list(df)).replace('[', '').replace(']', '')}"
+            for row in df.itertuples():
+                temp = str(list(row)).replace('[', '').replace(']', '')
+                data_csv += '{},\r\n'.format(temp)
+        else:
+            """ 处理 """
+            data_csv = ''
+            for k, v in results.items():
+                data_csv += '{},\r\n'.format(k)
+                for item in v:
+                    item = str(item).replace('{', '').replace('}', '')
+                    data_csv += '{},\r\n'.format(item)
         """写入"""
         self.set_header('Content-Type', 'application/octet-stream')
         self.set_header('Content-Disposition', 'filename={}'.format(filename.encode('utf-8').decode('ISO-8859-1')))

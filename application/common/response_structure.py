@@ -1,6 +1,3 @@
-import json
-
-
 def true_return(msg='', data=''):
     return {
         'success': True,
